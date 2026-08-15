@@ -1,4 +1,3 @@
-# Anvaya
 # Anvaya 
 
 **Anvaya** is a real-time assistive tool that bridges communication barriers by converting hand gestures and sign language into spoken words. The system captures video frames via a web interface, processes hand landmarks and gestures using a computer vision pipeline, predicts the corresponding signs, converts them to text, and synthesizes speech output in real time.
