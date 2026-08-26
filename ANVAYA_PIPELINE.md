@@ -1,121 +1,113 @@
-# Anvaya: System Pipeline & Engineering Architecture
+# Anvaya: Research-Driven System Pipeline & Phase-Wise Engineering Specification
 
-An end-to-end technical roadmap, execution pipeline, and hardware-optimized integration guide for **Anvaya** (Hand Gesture and Sign Language Detection $\to$ Text $\to$ Speech).
+A comprehensive technical architecture, mathematical normalization framework, and execution pipeline for **Anvaya** (Real-Time Hand Gesture and Sign Language Recognition with Temporal Debouncing & Native TTS).
 
 ---
 
-## 1. End-to-End System Architecture
+## 1. System Engineering Architecture & Data Flow
+
 
 ```
-[ Web Camera Feed (Frontend) ]
-             │  (640x480 @ 30 FPS / WebRTC or WebSocket)
-             ▼
-[ Stream Ingestion & Preprocessing (Backend / MediaPipe) ]
-             │  Extract 21 (x, y, z) Hand Keypoints
-             ▼
-[ Landmark Normalization Pipeline ]
-             │  Origin Shift (Wrist = 0,0,0) + Scale Invariance
-             │  Vector Shape: (1, 63) for Static / (30, 63) for Dynamic
-             ▼
-[ Inference Engine (Trained ML/DL Model) ]
-             │  Softmax Probability > Threshold (e.g., 0.80)
-             ▼
-[ Gesture Stabilization & Text Buffer ]
-             │  Debounce / Rolling Window Filter -> Sentence Assembler
-             ▼
+
+[ Web Camera (640x480 @ 30 FPS) ]
+│
+▼
+[ MediaPipe Hands (21 3D Keypoints) ]
+│  Raw Coordinates: P_i = (x_i, y_i, z_i), i ∈ [0, 20]
+▼
+[ Geometric Normalization Engine ] ──► (Addresses Scale & Position Invariance Gap)
+│  1. Origin Shift: ΔP_i = P_i - P_wrist
+│  2. Scale Invariance: P̂_i = ΔP_i / max(||ΔP_i||)
+│  Feature Tensor Shape: (1, 63)
+▼
+[ ONNX Quantized Inference Engine ] ──► (Addresses Zero-GPU Latency Gap)
+│  Multi-Layer Perceptron (Dense 128 -> 64 -> 32 -> Softmax)
+│  Sub-5ms Forward Pass (CPU Bound)
+▼
+[ Temporal State Machine & Debounce Filter ] ──► (Addresses Movement Epenthesis Gap)
+│  Sliding Window (w = 7 frames) Majority Voting
+│  Confidence Threshold: τ ≥ 0.85
+▼
 [ Output Layer ]
-     ├── 1. Text UI Output (Real-time display)
-     └── 2. Speech Synthesis (Web Speech API / TTS Engine)
+├── 1. Text UI Output Stream (Asynchronous UI DOM Update)
+└── 2. Client-Side Speech Engine (Native Web Speech API)
+
 ```
 
 ---
 
-## 2. Component Breakdown & Tech Stack
+## 2. Research Gaps & Engineering Solutions
 
-| Module | Responsibility | Recommended Tech Stack | Performance Rationale |
-|---|---|---|---|
-| **Data Collection** | Capturing frame landmark vectors per gesture class | Python 3.10+, OpenCV, MediaPipe Hands, NumPy | Lightweight coordinate logging directly into `.csv` / `.npy` files. |
-| **Model Training** | Neural network / classifier training on tabular keypoint data | Scikit-Learn, TensorFlow / Keras, Pandas | Fast CPU training (< 1 min for MLP on tabular coordinate datasets). |
-| **Model Export** | Serialization for ultra-low latency CPU inference | H5, ONNX Runtime (`onnxruntime`), Joblib | Sub-5ms CPU inference without GPU dependencies. |
-| **Backend & Ingestion** | Real-time frame streaming and model serving | FastAPI / Flask, WebSockets (`websockets`), Uvicorn | Async WebSocket handles 30 FPS bidirectional communication with low overhead. |
-| **Frontend UI** | Video capture, landmark visualizer, output stream | HTML5 Canvas, Vanilla JS / React, WebRTC / MediaDevices API | Native browser camera access with zero third-party client weight. |
-| **Speech Engine** | Text-to-Speech (TTS) conversion | Web Speech API (`window.speechSynthesis`) or gTTS / pyttsx3 | Client-side native browser TTS requires 0 server compute or latency. |
+| Identified Research Gap | Technical Limitation | Anvaya Engineering Solution |
+| :--- | :--- | :--- |
+| **1. Movement Epenthesis & Transition Flutter** | Intermediate movements between discrete signs generate transient noise, causing erratic classification spikes. | Implementation of a **Rolling-Window Majority Voting State Machine** ($w=7$ frames) with confidence gating ($\tau \ge 0.85$) to enforce stable token emission. |
+| **2. Scale & Monocular Spatial Variance** | User distance from the web camera and positional shifts distort raw pixel coordinates. | **Vectorized Euclidean Max Normalization** centering landmarks relative to the wrist origin ($\Delta P_i = P_i - P_0$) and scaled by maximum Euclidean radius. |
+| **3. High GPU Overhead vs. Browser Accessibility** | Deep 3D-CNNs and Graph Convolutions require dedicated CUDA hardware and introduce cloud streaming latency. | Lightweight tabular MLP exported to **ONNX Runtime**, coupled with client-side **Web Speech API** for zero-latency, zero-cost edge translation. |
 
 ---
 
-## 3. Detailed Execution Pipeline (Phase-by-Phase)
+## 3. Mathematical Normalization Engine
 
-### Phase 1: Landmark Extraction & Dataset Engineering
-1. **Camera Ingestion:** Initialize OpenCV `cv2.VideoCapture(0)` locked to $640 \times 480$ resolution.
-2. **Keypoint Tracking:** Pass frames to MediaPipe Hands with `max_num_hands=1` (or 2), `min_detection_confidence=0.7`, and `min_tracking_confidence=0.5`.
-3. **Mathematical Normalization:**
-   * Extract $(x_i, y_i, z_i)$ coordinates for all 21 keypoints ($i = 0 \dots 20$).
-   * Set the wrist coordinate $(x_0, y_0, z_0)$ as the origin:
-     $$\Delta x_i = x_i - x_0, \quad \Delta y_i = y_i - y_0, \quad \Delta z_i = z_i - z_0$$
-   * Normalize by max Euclidean distance to make scale invariant to camera distance:
-     $$d_{\max} = \max_{i} \sqrt{\Delta x_i^2 + \Delta y_i^2 + \Delta z_i^2}$$
-     $$\hat{x}_i = \frac{\Delta x_i}{d_{\max}}, \quad \hat{y}_i = \frac{\Delta y_i}{d_{\max}}, \quad \hat{z}_i = \frac{\Delta z_i}{d_{\max}}$$
-4. **Storage:** Flatten into a 63-element feature vector and append with a label to `dataset/landmarks_data.csv`. Target 300–500 samples per gesture.
+For each video frame containing a detected hand, the 21 landmarks are represented as:
+$$P_i = (x_i, y_i, z_i), \quad \forall i \in \{0, 1, \dots, 20\}$$
+
+### Step 1: Wrist-Centric Translation
+Landmark $0$ (the anatomical wrist) is assigned as the coordinate system origin $(0, 0, 0)$:
+$$\Delta x_i = x_i - x_0, \quad \Delta y_i = y_i - y_0, \quad \Delta z_i = z_i - z_0$$
+
+### Step 2: Euclidean Maximum Distance Scaling
+To ensure the feature representation remains scale-invariant across varying user-to-lens distances:
+$$d_{\max} = \max_{i \in \{0, \dots, 20\}} \sqrt{\Delta x_i^2 + \Delta y_i^2 + \Delta z_i^2}$$
+$$\hat{x}_i = \frac{\Delta x_i}{d_{\max}}, \quad \hat{y}_i = \frac{\Delta y_i}{d_{\max}}, \quad \hat{z}_i = \frac{\Delta z_i}{d_{\max}}$$
+
+### Step 3: Feature Tensor Assembly
+The normalized scalar coordinates are flattened into a 1D tabular vector:
+$$\mathbf{V} = \left[ \hat{x}_0, \hat{y}_0, \hat{z}_0, \hat{x}_1, \hat{y}_1, \hat{z}_1, \dots, \hat{x}_{20}, \hat{y}_{20}, \hat{z}_{20} \right]^T \in \mathbb{R}^{63}$$
 
 ---
 
-### Phase 2: Model Design & Training
+## 4. Phase-Wise Project Execution Plan
 
-#### Option A: Static Signs (Alphabets, Discrete Commands)
-* **Architecture:** Multi-Layer Perceptron (MLP)
-  * `Input Layer`: (63,)
-  * `Dense Layer 1`: 128 units, ReLU, Dropout(0.2)
+### Phase I: Dataset Engineering & Mathematical Preprocessing
+* **Step 1.1 (Data Acquisition Script):** Write `data_collection.py` using OpenCV and MediaPipe Hands to capture 300–500 samples per class at $640 \times 480$ resolution.
+* **Step 1.2 (Vector Normalization Pipeline):** Embed origin-shifting and Euclidean scaling into a standalone module (`normalizer.py`) to process coordinates in real time.
+* **Step 1.3 (Dataset Serialization):** Store feature vectors into partitioned `.csv` / `.npy` files with corresponding class integer labels.
+
+### Phase II: Model Architecture, Training & ONNX Optimization
+* **Step 2.1 (Neural Classifier Architecture):** Construct a Multi-Layer Perceptron (MLP) in TensorFlow/Keras:
+  * `Input`: Shape $(63,)$
+  * `Dense Layer 1`: 128 units, ReLU, Batch Normalization, Dropout(0.2)
   * `Dense Layer 2`: 64 units, ReLU, Dropout(0.2)
   * `Dense Layer 3`: 32 units, ReLU
-  * `Output Layer`: N classes, Softmax
-* **Optimizer:** Adam (lr=0.001), Loss: `sparse_categorical_crossentropy` / `categorical_crossentropy`.
+  * `Output Layer`: $N$ Classes, Softmax activation
+* **Step 2.2 (Training & Validation):** Train using Adam optimizer ($\eta = 0.001$) and categorical cross-entropy loss with an 80/20 train-test split.
+* **Step 2.3 (ONNX Serialization):** Convert the `.h5` model to `gesture_model.onnx` using `tf2onnx` to optimize CPU forward pass speed ($< 5$ ms).
 
-#### Option B: Dynamic Gestures (Words, Full Motions)
-* **Architecture:** LSTM / GRU Network
-  * `Input Layer`: (30 frames, 63 keypoints)
-  * `LSTM Layer 1`: 64 units, return_sequences=True
-  * `LSTM Layer 2`: 32 units
-  * `Dense Layer`: 32 units, ReLU
-  * `Output Layer`: N classes, Softmax
+### Phase III: Backend Streaming & Temporal Debounce Logic
+* **Step 3.1 (FastAPI WebSocket Service):** Establish full-duplex WebSocket endpoints in `app.py` capable of ingesting landmark vectors and broadcasting inference results asynchronously.
+* **Step 3.2 (Temporal Debounce Algorithm):** Implement a rolling queue of capacity $w = 7$. A token is emitted only if:
+  $$\text{Count}(\text{Predicted Class}) \ge 5 \quad \text{and} \quad \bar{p}_{\text{confidence}} \ge 0.85$$
+  This prevents intermittent misclassifications during hand entry, exit, and gesture transitions.
 
----
+### Phase IV: Frontend Web UI & Speech Integration
+* **Step 4.1 (Webcam Ingestion Interface):** Configure HTML5 `<video>` and `<canvas>` stream using `navigator.mediaDevices.getUserMedia()`.
+* **Step 4.2 (Prediction Display & Sentence Assembler):** Render real-time confidence meters and a persistent dynamic sentence buffer on screen.
+* **Step 4.3 (Zero-Latency Speech Engine):** Hook output emissions into the browser's native `window.speechSynthesis` API:
+  ```javascript
+  function emitSpeech(word) {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(word);
+      utterance.rate = 1.0;
+      window.speechSynthesis.speak(utterance);
+    }
+  }
 
-### Phase 3: Web & Backend Integration
+### Phase V: Verification, Benchmarking & Testing
 
-1. **Option 1 (Client-Side MediaPipe - Lowest Latency):**
-   * Run `@mediapipe/camera_utils` and `@mediapipe/hands` directly in the browser via JavaScript CDN.
-   * Send the 63 normalized coordinates over WebSocket to FastAPI.
-   * FastAPI runs `model.predict(vector)` and returns `{ "label": "A", "confidence": 0.94 }`.
-   * **Bandwidth:** < 1 KB/s per frame (zero video data sent over network).
+* **Benchmark 1:** Frame Rate (Target: $\ge 30$ FPS on commodity quad-core CPUs).
+* **Benchmark 2:** End-to-End Latency (Target: $< 30$ ms from camera capture to UI/audio output).
+* **Benchmark 3:** Validation Accuracy & Jitter Reduction (Target: $\ge 95\%$ accuracy, $\ge 90\%$ false positive transition suppression).
 
-2. **Option 2 (Server-Side OpenCV Processing):**
-   * Browser grabs frame from `<video>` element, converts to base64 JPEG, and streams over WebSocket.
-   * FastAPI backend decodes JPEG, passes through MediaPipe Python, runs inference, and responds with the label.
+```
 
----
-
-### Phase 4: Output Synthesis (Text & Voice)
-
-1. **Debounce / Smoothing Filter:**
-   * Maintain a rolling buffer of the last 5–10 predictions.
-   * Emit the character/word only if the same label appears consecutively for $\ge 7$ frames to eliminate jitter.
-2. **Sentence Buffer:**
-   * Combine characters into words; trigger an end-of-gesture delimiter (e.g., hand drop or specific gesture) to finalize words.
-3. **Audio Synthesis:**
-   * Invoke client-side browser API:
-     ```javascript
-     function speak(text) {
-       const utterance = new SpeechSynthesisUtterance(text);
-       utterance.rate = 1.0;
-       window.speechSynthesis.speak(utterance);
-     }
-     ```
-
----
-
-## 4. Hardware Optimization & Deployment Precautions
-
-* **Resolution Caps:** Keep input webcam capture at $640 \times 480$ (30 FPS). Higher resolutions only add latency with zero gain in landmark accuracy.
-* **Vectorized Preprocessing:** Always use NumPy array slicing rather than Python loops when subtracting wrist offsets.
-* **Format Conversion:** For CPU deployment (e.g. Ryzen 5 7520U), convert `.h5` model to ONNX runtime format for instantaneous forward passes.
-* **Thread Decoupling:** Keep video capture and audio playback on separate browser threads to ensure continuous frame processing without UI freezing.
+```
