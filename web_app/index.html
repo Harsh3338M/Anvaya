@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Anvaya — Sign Recognition</title>
+<link rel="stylesheet" href="style.css" />
+
+<!--
+  These libraries are loaded from CDN for simplicity. Everything else in this
+  app (your trained model, your code) runs fully offline once the page has
+  loaded. If your presentation venue has unreliable internet, download these
+  three libraries ahead of time and point these <script> tags at local copies
+  instead -- see docs/GUIDE.md, Phase 2, Step 2.3.
+-->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<header>
+  <h1>Anvaya</h1>
+  <p>Real-Time Two-Hand Sign Recognition — runs entirely in this browser tab</p>
+</header>
+
+<main>
+  <section class="camera-panel">
+    <div class="video-wrap">
+      <video id="input_video" autoplay playsinline muted></video>
+      <canvas id="overlay_canvas"></canvas>
+    </div>
+    <div class="status-row">
+      <span id="model_status">Loading model...</span>
+      <span id="fps_counter">-- FPS</span>
+    </div>
+  </section>
+
+  <section class="output-panel">
+    <h2>Detected Sign</h2>
+    <div id="current_prediction" class="prediction-box">—</div>
+    <div id="confidence_bar_wrap">
+      <div id="confidence_bar"></div>
+    </div>
+
+    <h2>Sentence Buffer</h2>
+    <div id="sentence_buffer" class="sentence-box"></div>
+
+    <div class="controls">
+      <button id="clear_btn">Clear Sentence</button>
+      <button id="speak_btn">Speak Sentence</button>
+      <label><input type="checkbox" id="auto_speak_toggle" checked /> Auto-speak new signs</label>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>No data leaves this device. No backend server is used. See docs/GUIDE.md for setup.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

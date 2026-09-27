@@ -1,0 +1,5 @@
+Trained model files go here after Phase 1 (see docs/GUIDE.md):
+  - model.json
+  - group1-shard*.bin (one or more weight shard files)
+  - label_map.json
+This folder is intentionally empty in a fresh checkout.

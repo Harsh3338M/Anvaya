@@ -1,0 +1,16 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Dev-only training artifacts (regenerate via docs/GUIDE.md, Phase 1)
+data_collection/dataset/
+model_training/sequences_dataset.npz
+model_training/gesture_cnn.h5
+model_training/model_web/
+model_training/label_map.json
+
+# Trained model copied into the web app (regenerate, don't hand-edit)
+web_app/model/*.json
+web_app/model/*.bin
+!web_app/model/.gitkeep
