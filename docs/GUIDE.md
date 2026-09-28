@@ -21,9 +21,12 @@ Do not skip Phase 1 — Phase 2 will not work without a trained model already si
 ```bash
 cd anvaya-project/model_training
 python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
+source venv/bin/activate        # Windows: .\venv\Scripts\activate
 pip install -r requirements.txt
 ```
+
+Use Python 3.10, 3.11 or 3.12 (TensorFlow/MediaPipe don't support 3.13+ yet). MediaPipe is pinned to
+0.10.21 on purpose: newer versions removed the `mp.solutions.hands` API used by `capture_sequences.py`.
 
 ### 1.1 Decide your class list
 
@@ -90,8 +93,8 @@ Converts `gesture_cnn.h5` into `model_training/model_web/` (a `model.json` plus 
 files). Copy that folder's **contents** into `web_app/model/`:
 
 ```bash
-cp -r model_web/* ../web_app/model/
-cp label_map.json ../web_app/model/
+cp -r model_web/* ../web_app/model/          # Windows: xcopy model_web\* ..\web_app\model\ /E /Y
+cp label_map.json ../web_app/model/         # Windows: copy label_map.json ..\web_app\model\
 ```
 
 At this point `web_app/model/` should contain `model.json`, one or more `.bin` weight files,
@@ -114,7 +117,8 @@ cd anvaya-project/web_app
 python -m http.server 3000
 ```
 
-Then open `http://localhost:3000` in Chrome, Edge, or Firefox.
+Then open `http://localhost:3000` in Chrome, Edge, or Firefox and click **Launch Gesture Studio**
+(or go straight to `http://localhost:3000/studio.html`).
 
 ### 2.2 Grant camera access
 
@@ -123,9 +127,9 @@ The browser will prompt for camera permission on first load — allow it.
 ### 2.3 Confirm it's fully offline-capable (optional but worth doing before the actual
 presentation)
 
-- MediaPipe Hands and TensorFlow.js are loaded from CDN links in `index.html` by default for
+- MediaPipe Hands and TensorFlow.js are loaded from CDN links in `studio.html` by default for
   simplicity. If your presentation venue has unreliable internet, download those library files
-  once ahead of time and point the `<script>` tags in `index.html` to the local copies instead
+  once ahead of time and point the `<script>` tags in `studio.html` to the local copies instead
   — everything else (your model, your code) already runs fully offline.
 - After the page has loaded once successfully, turn off Wi-Fi and confirm the camera, detection,
   and speech output still work. If you self-hosted the libraries, this will succeed completely.

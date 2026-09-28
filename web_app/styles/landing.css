@@ -1,0 +1,91 @@
+/* landing.css — layout rules for index.html only. Uses tokens.css variables. */
+.hero {
+  background: linear-gradient(160deg, var(--color-hero-gradient-start), var(--color-hero-gradient-end));
+  padding: var(--space-16) 0;
+}
+.hero-inner {
+  max-width: var(--max-width-page);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-10);
+  align-items: center;
+}
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-10);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(8px);
+}
+.hero-copy h1 .accent { color: var(--color-brand); }
+.hero-copy p { font-size: var(--font-size-base); }
+.hero-cta { width: auto; align-self: flex-start; padding: var(--space-4) var(--space-8); }
+
+.hero-art {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-4);
+}
+.sign-card { margin: 0; text-align: center; }
+.sign-art {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-card);
+  border: 2px dashed var(--color-border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.sign-art img { width: 100%; height: 100%; object-fit: contain; }
+.sign-card figcaption {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  color: var(--color-brand-dark);
+}
+
+.feature-strip { background: var(--color-bg-card); border-bottom: 1px solid var(--color-border); }
+.feature-list {
+  max-width: var(--max-width-page);
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-6);
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: var(--space-4);
+}
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+.check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  font-size: 11px;
+}
+
+@media (max-width: 860px) {
+  .hero { padding: var(--space-8) 0; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-copy { padding: var(--space-6); }
+  h1 { font-size: var(--font-size-2xl); }
+}

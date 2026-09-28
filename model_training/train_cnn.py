@@ -10,6 +10,13 @@ The browser app (web_app/) only ever loads the finished model and runs
 inference -- see docs/GUIDE.md, "Common Questions".
 """
 
+# --- IMPORTANT: must run BEFORE tensorflow is imported. ---
+# TensorFlow 2.16+ defaults to Keras 3, whose saved models TensorFlow.js cannot
+# load in the browser. This switches TensorFlow back to Keras 2 (tf_keras).
+import os
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
+
+
 import os
 import json
 import numpy as np

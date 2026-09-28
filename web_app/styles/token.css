@@ -1,0 +1,91 @@
+/*
+ * tokens.css
+ *
+ * Design foundation for the Anvaya UI, matching the Stitch reference design
+ * (docs reference: landing page + Gesture Studio mockups).
+ *
+ * Every other stylesheet in this project (base.css, landing.css, studio.css)
+ * should use these variables instead of hardcoding colors/spacing directly.
+ * This is the ONLY file that should need editing to re-theme the whole app.
+ */
+
+:root {
+  /* ---- Brand / accent (teal) ---- */
+  --color-brand: #0d9488;           /* "Project Anvaya" wordmark, active nav underline */
+  --color-brand-dark: #0b7c72;      /* Sign In button, darker teal surfaces */
+  --color-brand-gradient-start: #14b8a6;
+  --color-brand-gradient-end: #0d9488;
+
+  /* Hero background gradient (light teal -> soft blue-white) */
+  --color-hero-gradient-start: #9fd8d0;
+  --color-hero-gradient-end: #eaf6f4;
+
+  /* ---- Neutrals ---- */
+  --color-bg-page: #f0f2f1;         /* overall page background */
+  --color-bg-card: #ffffff;         /* cards / panels */
+  --color-bg-subtle: #f7f8f8;       /* nested surfaces inside cards */
+  --color-bg-dark: #14181a;         /* video preview / dark surfaces */
+
+  --color-border: #e2e5e4;
+  --color-border-strong: #cfd3d2;
+
+  --color-text-primary: #1a1d1c;
+  --color-text-secondary: #5f6368;
+  --color-text-muted: #8a8f8e;
+  --color-text-on-brand: #ffffff;
+  --color-text-on-dark: #f0f2f1;
+
+  /* ---- Status ---- */
+  --color-success: #16a34a;
+  --color-success-bg: #e7f7ed;
+  --color-danger: #dc2626;
+
+  /* ---- Typography ---- */
+  --font-family-base: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.5rem;     /* 24px */
+  --font-size-2xl: 2rem;      /* 32px */
+  --font-size-3xl: 2.75rem;   /* 44px -- hero headline */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+
+  /* ---- Spacing scale ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ---- Radius ---- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;      /* Sign In button, CTA button, badges */
+
+  /* ---- Shadow ---- */
+  --shadow-card: 0 1px 3px rgba(20, 24, 22, 0.06), 0 4px 12px rgba(20, 24, 22, 0.04);
+  --shadow-card-hover: 0 2px 6px rgba(20, 24, 22, 0.08), 0 8px 20px rgba(20, 24, 22, 0.06);
+
+  /* ---- Layout ---- */
+  --max-width-page: 1200px;
+  --nav-height: 72px;
+
+  /* ---- Motion ---- */
+  --transition-fast: 0.15s ease-out;
+  --transition-base: 0.2s ease-out;
+}

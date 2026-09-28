@@ -1,0 +1,70 @@
+/* studio.css — layout rules for studio.html only. Uses tokens.css variables. */
+.studio-main { max-width: var(--max-width-page); margin: 0 auto; padding: var(--space-8) var(--space-6) 0; }
+.studio-head { text-align: center; margin-bottom: var(--space-8); }
+.studio-head h1 { font-size: var(--font-size-2xl); font-weight: var(--font-weight-regular); }
+.studio-head p { max-width: 560px; margin: var(--space-3) auto 0; font-size: var(--font-size-sm); }
+
+.studio-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: var(--space-6); align-items: start; }
+.card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4); }
+.card-head h2 { font-size: var(--font-size-lg); font-weight: var(--font-weight-medium); }
+.card-head .actions { display: flex; gap: var(--space-1); }
+
+/* Camera card */
+.badge-off { background: #eceeed; color: var(--color-text-muted); }
+.badge-off::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--color-text-muted); }
+.video-wrap {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--color-bg-dark);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+#input_video, #overlay_canvas { position: absolute; inset: 0; width: 100%; height: 100%; transform: scaleX(-1); }
+#input_video { object-fit: cover; }
+.camera-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 24, 26, 0.55);
+  color: var(--color-text-on-dark);
+  font-weight: var(--font-weight-medium);
+  transition: opacity var(--transition-base);
+}
+.camera-overlay.hidden { opacity: 0; pointer-events: none; }
+.status-row { display: flex; justify-content: space-between; margin-top: var(--space-3); font-size: var(--font-size-xs); color: var(--color-text-muted); }
+.detect-row { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-3); }
+#current_prediction { font-weight: var(--font-weight-semibold); min-width: 90px; }
+.conf-track { flex: 1; height: 6px; border-radius: var(--radius-pill); background: var(--color-border); overflow: hidden; }
+#confidence_bar { height: 100%; width: 0; background: var(--color-brand); transition: width var(--transition-fast); }
+
+/* Translation card */
+.translation-box {
+  min-height: 110px;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-card);
+  margin-bottom: var(--space-4);
+  word-wrap: break-word;
+}
+.translation-box:empty::before { content: attr(data-placeholder); color: var(--color-text-muted); }
+.btn-gradient { padding: var(--space-4); box-shadow: 0 6px 16px rgba(13, 148, 136, 0.25); }
+.slider-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); margin: var(--space-5) 0; }
+.slider-row label, .voice-field label { display: flex; justify-content: space-between; margin-bottom: var(--space-2); }
+.checkbox-row { margin-top: var(--space-4); }
+
+/* Session log */
+.session-log { margin-top: var(--space-4); padding: 0; }
+.session-log summary { list-style: none; cursor: pointer; padding: var(--space-4) var(--space-6); display: flex; justify-content: space-between; align-items: center; font-weight: var(--font-weight-medium); }
+.session-log summary::-webkit-details-marker { display: none; }
+.session-log summary::after { content: "\25BE"; transition: transform var(--transition-fast); }
+.session-log[open] summary::after { transform: rotate(180deg); }
+.log-body { padding: 0 var(--space-6) var(--space-4); }
+#session_log_list { list-style: none; margin: 0 0 var(--space-3); padding: 0; max-height: 200px; overflow-y: auto; font-size: var(--font-size-sm); }
+#session_log_list li { display: flex; justify-content: space-between; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); }
+#session_log_list .meta { color: var(--color-text-muted); }
+.log-empty { color: var(--color-text-muted); font-size: var(--font-size-sm); }
+
+@media (max-width: 860px) { .studio-grid { grid-template-columns: 1fr; } }

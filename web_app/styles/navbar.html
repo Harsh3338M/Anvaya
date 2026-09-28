@@ -1,0 +1,44 @@
+<!--
+  navbar.html  (SHARED PARTIAL)
+
+  This is plain HTML with no templating engine, so this file is a reference
+  snippet: copy the <header> block below and paste it at the top of <body> in
+  BOTH index.html and studio.html. If you change the nav, change it in both.
+
+  Placeholders (per project decision): Learn, Community, About and Sign In do
+  not go anywhere yet. Their href is "#" and Sign In has no handler. Only
+  "Studio" is a real link.
+-->
+<header class="site-nav">
+  <div class="site-nav-inner">
+    <a href="index.html" class="brand">Project Anvaya</a>
+
+    <nav aria-label="Main">
+      <ul class="nav-links">
+        <li><a href="studio.html" class="nav-link active">Studio</a></li>
+        <li><a href="#" class="nav-link">Learn</a></li>
+        <li><a href="#" class="nav-link">Community</a></li>
+        <li><a href="#" class="nav-link">About</a></li>
+      </ul>
+    </nav>
+
+    <div class="nav-actions">
+      <button type="button" class="btn btn-primary" title="Coming soon">Sign In</button>
+
+      <button type="button" class="icon-btn" aria-label="Settings" title="Settings (coming soon)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+
+      <button type="button" class="icon-btn" aria-label="Help" title="Help (coming soon)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
