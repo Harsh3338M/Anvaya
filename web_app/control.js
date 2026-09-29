@@ -14,6 +14,14 @@
   const textEl = document.getElementById("translation_text");
   let voices = [];
 
+  // Sliders are 0-100 (Stitch design). Map them to the ranges the Web Speech
+  // API actually expects: rate ~0.5-1.5 (comfortable listening speed), pitch
+  // 0-2 (its documented valid range). Feeding the raw 0-100 value straight
+  // into `rate`/`pitch` -- as an earlier version of this file did -- produces
+  // invalid or garbled speech, since those aren't the API's real units.
+  const mapRate = (v) => 0.5 + (v / 100) * 1.0;   // 0 -> 0.5x, 50 -> 1.0x, 100 -> 1.5x
+  const mapPitch = (v) => (v / 100) * 2.0;        // 0 -> 0.0,  50 -> 1.0,  100 -> 2.0
+
   function loadVoices() {
     if (!("speechSynthesis" in window)) {
       voiceEl.innerHTML = "<option>Speech not supported</option>";
@@ -36,19 +44,27 @@
     if (!("speechSynthesis" in window) || !text) return;
     if (interrupt) window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.rate = parseFloat(speedEl.value);
-    u.pitch = parseFloat(pitchEl.value);
+    u.rate = mapRate(parseFloat(speedEl.value));
+    u.pitch = mapPitch(parseFloat(pitchEl.value));
     const voice = voices[parseInt(voiceEl.value, 10)];
     if (voice) u.voice = voice;
     window.speechSynthesis.speak(u);
   }
 
-  speedEl.addEventListener("input", () => {
-    document.getElementById("speed_value").textContent = `${parseFloat(speedEl.value).toFixed(1)}x`;
-  });
-  pitchEl.addEventListener("input", () => {
-    document.getElementById("pitch_value").textContent = parseFloat(pitchEl.value).toFixed(1);
-  });
+  const speedValueEl = document.getElementById("speed_value");
+  const pitchValueEl = document.getElementById("pitch_value");
+
+  function updateSpeedLabel() {
+    speedValueEl.textContent = `${mapRate(parseFloat(speedEl.value)).toFixed(1)}x`;
+  }
+  function updatePitchLabel() {
+    pitchValueEl.textContent = mapPitch(parseFloat(pitchEl.value)).toFixed(1);
+  }
+
+  speedEl.addEventListener("input", updateSpeedLabel);
+  pitchEl.addEventListener("input", updatePitchLabel);
+  updateSpeedLabel(); // sync labels to the sliders' actual starting values on load
+  updatePitchLabel();
 
   speakBtn.addEventListener("click", () => speak(textEl.textContent.trim(), { interrupt: true }));
 
