@@ -1,136 +1,240 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="scroll-smooth" lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gesture Studio — Project Anvaya</title>
-  <link rel="stylesheet" href="styles/tokens.css" />
-  <link rel="stylesheet" href="styles/base.css" />
-  <link rel="stylesheet" href="styles/studio.css" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gesture Studio &mdash; Project Anvaya</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
+<!--
+  DESIGN TOKENS LIVE HERE. This tailwind.config block IS the design system
+  (colors, radius, spacing, fonts, font sizes) -- change a value here and
+  every element using that token updates everywhere. This replaces the old
+  styles/tokens.css approach.
+-->
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                "colors": {
+                    "secondary": "#4c56af", "on-primary-fixed-variant": "#005048",
+                    "on-secondary-fixed-variant": "#343d96", "on-tertiary-fixed": "#001f24",
+                    "on-tertiary-fixed-variant": "#004f58", "on-error-container": "#93000a",
+                    "on-surface": "#191c1e", "on-secondary": "#ffffff",
+                    "tertiary-fixed-dim": "#00daf3", "deep-ocean": "#1A237E",
+                    "tertiary-fixed": "#9cf0ff", "success-mint": "#00E676",
+                    "error": "#ba1a1a", "on-background": "#191c1e",
+                    "on-primary-fixed": "#00201c", "primary-fixed": "#85f6e5",
+                    "error-container": "#ffdad6", "outline": "#6d7a77",
+                    "on-tertiary": "#ffffff", "surface-container-high": "#e6e8ea",
+                    "on-primary-container": "#f4fffb", "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#f7f9fb", "on-surface-variant": "#3d4947",
+                    "primary-container": "#008377", "surface-glass": "rgba(255, 255, 255, 0.7)",
+                    "surface-container": "#eceef0", "on-primary": "#ffffff",
+                    "surface-container-low": "#f2f4f6", "background": "#f7f9fb",
+                    "surface-dim": "#d8dadc", "inverse-primary": "#67d9c9",
+                    "surface-tint": "#006a60", "tertiary": "#006672",
+                    "secondary-fixed-dim": "#bdc2ff", "on-tertiary-container": "#f7feff",
+                    "tertiary-container": "#008190", "secondary-container": "#959efd",
+                    "primary-fixed-dim": "#67d9c9", "outline-variant": "#bcc9c6",
+                    "on-error": "#ffffff", "surface-variant": "#e0e3e5",
+                    "surface": "#f7f9fb", "secondary-fixed": "#e0e0ff",
+                    "surface-container-highest": "#e0e3e5", "inverse-surface": "#2d3133",
+                    "primary": "#00685e", "inverse-on-surface": "#eff1f3",
+                    "on-secondary-fixed": "#000767", "on-secondary-container": "#27308a"
+                },
+                "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px", "24": "24px" },
+                "spacing": { "container-padding": "32px", "base": "8px", "gutter": "24px", "max-width": "1200px" },
+                "fontFamily": {
+                    "title-md": ["Plus Jakarta Sans"], "label-caps": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"]
+                },
+                "fontSize": {
+                    "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+                    "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                    "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                    "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                    "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                    "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                    "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }]
+                }
+            }
+        }
+    }
+</script>
+<style>
+    .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2); }
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+    .animate-wave { animation: wave 2.5s infinite; transform-origin: 70% 70%; }
+    @keyframes wave { 0% { transform: rotate(0deg) } 10% { transform: rotate(14deg) } 20% { transform: rotate(-8deg) } 30% { transform: rotate(14deg) } 40% { transform: rotate(-4deg) } 50% { transform: rotate(10deg) } 60% { transform: rotate(0deg) } 100% { transform: rotate(0deg) } }
+    .glowing-btn { background: linear-gradient(135deg, #008377, #67d9c9); box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3); transition: all 0.2s ease; }
+    .glowing-btn:hover { transform: scale(1.02); box-shadow: 0 6px 20px rgba(0, 230, 118, 0.5); }
+    /* Real camera feed sits under the mascot overlay; canvas draws hand landmarks on top of the video */
+    #input_video, #overlay_canvas { position: absolute; inset: 0; width: 100%; height: 100%; transform: scaleX(-1); }
+    #input_video { object-fit: cover; }
+    #camera_overlay { transition: opacity 0.2s ease-out; }
+    #camera_overlay.hidden { opacity: 0; pointer-events: none; }
+    #confidence_track { background: rgba(25, 28, 30, 0.08); }
+    details > summary { list-style: none; cursor: pointer; }
+    details > summary::-webkit-details-marker { display: none; }
+    details[open] .log-chevron { transform: rotate(180deg); }
+</style>
 </head>
-<body>
+<body class="bg-background text-on-surface font-body-md antialiased overflow-x-hidden min-h-screen flex flex-col">
 
-  <!-- NAVBAR (same markup as partials/navbar.html) -->
-  <header class="site-nav">
-    <div class="site-nav-inner">
-      <a href="index.html" class="brand">Project Anvaya</a>
-      <nav aria-label="Main">
-        <ul class="nav-links">
-          <li><a href="studio.html" class="nav-link active">Studio</a></li>
-          <li><a href="#" class="nav-link">Learn</a></li>
-          <li><a href="#" class="nav-link">Community</a></li>
-          <li><a href="#" class="nav-link">About</a></li>
-        </ul>
-      </nav>
-      <div class="nav-actions">
-        <button type="button" class="btn btn-primary" title="Coming soon">Sign In</button>
-        <button type="button" class="icon-btn" aria-label="Settings" title="Settings (coming soon)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-        </button>
-        <button type="button" class="icon-btn" aria-label="Help" title="Help (coming soon)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-        </button>
-      </div>
-    </div>
-  </header>
+<!-- TopNavBar. Sign In / Learn / Community / About / settings / help are placeholders for now. -->
+<header class="fixed top-0 w-full z-50 backdrop-blur-xl bg-surface-glass border-b border-white/20 shadow-sm transition-all duration-300 h-20 px-container-padding">
+<div class="max-w-max-width mx-auto flex justify-between items-center h-full">
+<a href="index.html" class="font-display text-headline-lg-mobile md:text-headline-lg text-primary tracking-tight">Project Anvaya</a>
+<nav class="hidden md:flex gap-8">
+<a class="text-primary font-bold border-b-2 border-primary font-title-md text-title-md hover:scale-105 transition-transform duration-200" href="studio.html">Studio</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-title-md text-title-md hover:scale-105 transition-transform duration-200" href="#">Learn</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-title-md text-title-md hover:scale-105 transition-transform duration-200" href="#">Community</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-title-md text-title-md hover:scale-105 transition-transform duration-200" href="#">About</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="hidden md:block bg-primary text-on-primary px-6 py-2 rounded-full font-title-md text-title-md hover:scale-105 transition-transform duration-200 active:scale-95 duration-100" title="Coming soon" type="button">Sign In</button>
+<div class="flex gap-2">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-variant/50" title="Coming soon" type="button"><span class="material-symbols-outlined">settings</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-variant/50" title="Coming soon" type="button"><span class="material-symbols-outlined">help</span></button>
+</div>
+</div>
+</div>
+</header>
 
-  <main class="studio-main">
-    <div class="studio-head">
-      <h1>Gesture Studio</h1>
-      <p>Start signing in front of your camera. Our AI model will translate your gestures into text and speech in real-time.</p>
-    </div>
+<main class="flex-grow pt-20">
+<!-- Interactive Gesture Studio Section -->
+<section class="py-24 px-container-padding bg-surface-container-low relative" id="studio">
+<div class="absolute inset-0 bg-surface-variant/30 backdrop-blur-3xl z-0"></div>
+<div class="relative z-10 max-w-max-width mx-auto">
+<div class="mb-12 text-center space-y-4">
+<h2 class="font-display text-[32px] md:text-[40px] text-on-surface">Gesture Studio</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">Start signing in front of your camera. Our AI model will translate your gestures into text and speech in real-time.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
 
-    <div class="studio-grid">
-      <!-- LEFT: camera -->
-      <section class="card">
-        <div class="card-head">
-          <span id="live_badge" class="badge badge-success">Live Feed Active</span>
-          <button id="camera_toggle" type="button" class="icon-btn" aria-label="Turn camera on or off" title="Toggle camera">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="2"></rect></svg>
-          </button>
-        </div>
-        <div class="video-wrap">
-          <video id="input_video" autoplay playsinline muted></video>
-          <canvas id="overlay_canvas"></canvas>
-          <div id="camera_overlay" class="camera-overlay">Reading your signs...</div>
-        </div>
-        <div class="detect-row">
-          <span id="current_prediction">&mdash;</span>
-          <div class="conf-track"><div id="confidence_bar"></div></div>
-        </div>
-        <div class="status-row">
-          <span id="model_status">Loading model...</span>
-          <span id="fps_counter">-- FPS</span>
-        </div>
-      </section>
+<!-- Left Column: Live camera + MediaPipe overlay -->
+<div class="lg:col-span-7 glass-panel rounded-24 p-6 relative flex flex-col shadow-[0_0_40px_rgba(0,131,119,0.15)] border-primary-container/30">
+<div class="flex justify-between items-center mb-4">
+<div id="live_badge" class="flex items-center gap-2 bg-success-mint/10 text-on-primary-fixed-variant px-3 py-1.5 rounded-full border border-success-mint/30">
+<span class="w-2.5 h-2.5 rounded-full bg-success-mint animate-pulse"></span>
+<span class="font-label-caps text-label-caps">Live Feed Active</span>
+</div>
+<button id="camera_toggle" class="p-2 bg-surface-container rounded-full hover:bg-surface-variant transition-colors text-on-surface" title="Toggle camera" type="button">
+<span class="material-symbols-outlined">videocam_off</span>
+</button>
+</div>
 
-      <!-- RIGHT: translation + speech controls -->
-      <div>
-        <section class="card">
-          <div class="card-head">
-            <h2>Live Translation</h2>
-            <div class="actions">
-              <button id="copy_btn" type="button" class="icon-btn" aria-label="Copy text" title="Copy">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-              </button>
-              <button id="clear_btn" type="button" class="icon-btn" aria-label="Clear text" title="Clear">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
-              </button>
-            </div>
-          </div>
+<div class="relative w-full aspect-video bg-inverse-surface rounded-xl overflow-hidden border-2 border-inverse-primary/50 flex items-center justify-center">
+  <video id="input_video" autoplay playsinline muted></video>
+  <canvas id="overlay_canvas"></canvas>
 
-          <div id="translation_text" class="translation-box" data-placeholder="Your translated signs will appear here..." aria-live="polite"></div>
+  <!-- Idle-state mascot overlay: shown until a hand is detected, then hidden by app.js -->
+  <div id="camera_overlay" class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-inverse-surface/80 backdrop-blur-sm">
+    <img alt="Friendly robot mascot" class="w-24 h-24 mb-4 animate-wave" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0kcQY2FHXL5WdWXkL2vneHDu_jW1BUWP6iMGPA_wV3-OPAPqNIyllCbiCiWwhRMhgxfnu4UN9HBgVh4U2NCto6HAaJ_S2d8cR4aZPcP1aZZOjDhUP_m6ZrNZiUZuLUV-EMPD5T04nmevgiBmJ5PD1iwQaKct3g_mGMx3bEJjeGLqdvFP6WbjBKEVtndswKjGvk4WvU3F8ZEOCmG_ImN6k0YSQlI29AaHxZmQEZO01E-1zLCTxWE7n"/>
+    <p id="camera_overlay_text" class="text-on-secondary font-title-md text-title-md animate-pulse">Reading your signs...</p>
+  </div>
+</div>
 
-          <button id="speak_btn" type="button" class="btn btn-gradient">Speak Sentence</button>
+<!-- Live prediction + confidence + status (new, not in the original mockup: needed to show model output) -->
+<div class="flex items-center gap-3 mt-4">
+  <span id="current_prediction" class="font-title-md text-title-md text-primary min-w-[80px]">&mdash;</span>
+  <div id="confidence_track" class="flex-1 h-1.5 rounded-full overflow-hidden">
+    <div id="confidence_bar" class="h-full bg-primary" style="width:0%"></div>
+  </div>
+</div>
+<div class="flex justify-between mt-2 font-label-caps text-label-caps text-on-surface-variant">
+  <span id="model_status">Loading model...</span>
+  <span id="fps_counter">-- FPS</span>
+</div>
+</div>
 
-          <div class="slider-row">
-            <div><label for="speed_slider">Speed <span id="speed_value">1.0x</span></label>
-              <input id="speed_slider" type="range" min="0.5" max="1.5" step="0.1" value="1" /></div>
-            <div><label for="pitch_slider">Pitch <span id="pitch_value">1.0</span></label>
-              <input id="pitch_slider" type="range" min="0.5" max="1.5" step="0.1" value="1" /></div>
-          </div>
+<!-- Right Column: Translation + speech controls + session log -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<div class="glass-panel rounded-24 p-6 flex-grow flex flex-col">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-title-md text-title-md text-on-surface">Live Translation</h3>
+<div class="flex gap-2">
+<button id="copy_btn" class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded transition-colors" title="Copy" type="button"><span class="material-symbols-outlined text-[20px]">content_copy</span></button>
+<button id="clear_btn" class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container/50 rounded transition-colors" title="Clear" type="button"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+</div>
 
-          <div class="voice-field">
-            <label for="voice_select">Voice/Accent</label>
-            <select id="voice_select"><option>Loading voices...</option></select>
-          </div>
+<div class="bg-surface-container-lowest rounded-xl p-4 min-h-[120px] mb-6 flex-grow border border-surface-variant/50">
+  <div id="translation_text" class="font-body-lg text-body-lg text-on-surface leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-on-surface-variant"
+       data-placeholder="Your translated signs will appear here..." aria-live="polite"></div>
+</div>
 
-          <label class="checkbox-row"><input type="checkbox" id="auto_speak_toggle" checked /> Auto-speak new signs</label>
-        </section>
+<div class="space-y-4">
+<button id="speak_btn" class="w-full glowing-btn text-white font-title-md text-title-md px-6 py-3 rounded-xl flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined">record_voice_over</span>
+Speak Sentence
+</button>
 
-        <details class="card session-log">
-          <summary>Session Log</summary>
-          <div class="log-body">
-            <ul id="session_log_list"></ul>
-            <button id="log_clear_btn" type="button" class="btn btn-secondary">Clear log</button>
-          </div>
-        </details>
-      </div>
-    </div>
-  </main>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant flex justify-between mb-2"><span>Speed</span><span id="speed_value">1.0x</span></label>
+<input id="speed_slider" class="w-full accent-primary" max="100" min="0" type="range" value="50"/>
+</div>
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant flex justify-between mb-2"><span>Pitch</span><span id="pitch_value">1.0</span></label>
+<input id="pitch_slider" class="w-full accent-primary" max="100" min="0" type="range" value="50"/>
+</div>
+</div>
 
-  <!-- FOOTER (same markup as partials/footer.html) -->
-  <footer class="site-footer">
-    <div class="site-footer-inner">
-      <span class="footer-brand">Project Anvaya</span>
-      <ul class="footer-links">
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Terms of Service</a></li>
-        <li><a href="#">Accessibility Statement</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
-      <span>&copy; 2026 Project Anvaya. Empowering through Gesture.</span>
-    </div>
-  </footer>
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-2">Voice/Accent</label>
+<select id="voice_select" class="w-full bg-surface-container-lowest border border-surface-variant rounded-lg px-3 py-2 text-on-surface font-body-md focus:ring-2 focus:ring-primary focus:border-primary">
+<option>Loading voices...</option>
+</select>
+</div>
 
-  <!-- Libraries (CDN). See docs/GUIDE.md for self-hosting these for offline use. -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js" crossorigin="anonymous"></script>
+<label class="flex items-center gap-2 font-label-caps text-label-caps text-on-surface-variant">
+  <input id="auto_speak_toggle" type="checkbox" class="accent-primary" checked/> Auto-speak new signs
+</label>
+</div>
+</div>
 
-  <!-- Order matters: helpers first, app.js last -->
-  <script src="session-log.js"></script>
-  <script src="controls.js"></script>
-  <script src="app.js"></script>
-</body>
-</html>
+<!-- Session Log: native <details> gives free expand/collapse, no extra JS needed -->
+<details class="glass-panel rounded-xl p-4">
+<summary class="flex items-center justify-between group">
+<h4 class="font-title-md text-[16px] text-on-surface group-hover:text-primary transition-colors">Session Log</h4>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-transform duration-200 log-chevron">expand_more</span>
+</summary>
+<ul id="session_log_list" class="mt-4 space-y-2 max-h-48 overflow-y-auto font-body-md text-body-md"></ul>
+<button id="log_clear_btn" type="button" class="mt-3 text-label-caps font-label-caps text-on-surface-variant hover:text-error transition-colors">Clear log</button>
+</details>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-surface-container-highest w-full py-12 flex flex-col md:flex-row justify-between items-center px-container-padding max-w-max-width mx-auto gap-gutter">
+<div class="font-title-md text-title-md text-primary">Project Anvaya</div>
+<div class="flex gap-4">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Accessibility Statement</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Contact</a>
+</div>
+<div class="text-on-surface font-body-md text-body-md">&copy; 2026 Project Anvaya. Empowering through Gesture.</div>
+</footer>
+
+<!-- Libraries (CDN). See docs/GUIDE.md for self-hosting these for offline use. -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js" crossorigin="anonymous"></script>
+
+<!-- Order matters: helpers first, app.js last. Written in Stage 2/3. -->
+<script src="session-log.js"></script>
+<script src="controls.js"></script>
+<script src="app.js"></script>
+</body></html>

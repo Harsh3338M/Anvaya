@@ -213,7 +213,6 @@ Open your browser and go to:
 http://localhost:3000
 ```
 You'll see the landing page. Click **Launch Gesture Studio** (or go straight to `http://localhost:3000/studio.html`).
-
 Allow camera access when prompted. Perform a sign and hold it for about a second — the
 translated word should appear on screen and be spoken aloud.
 
@@ -239,7 +238,7 @@ translated word should appear on screen and be spoken aloud.
 ```bash
 # Every new terminal session, before running any Python step:
 cd model_training
-source venv/bin/activate      # or venv\Scripts\activate on Windows
+source venv/bin/activate      # or .\venv\Scripts\activate on Windows
 
 # Record more data:
 cd ../data_collection && python capture_sequences.py

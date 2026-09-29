@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Anvaya</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#4c56af",
+                        "on-primary-fixed-variant": "#005048",
+                        "on-secondary-fixed-variant": "#343d96",
+                        "on-tertiary-fixed": "#001f24",
+                        "on-tertiary-fixed-variant": "#004f58",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#191c1e",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#00daf3",
+                        "deep-ocean": "#1A237E",
+                        "tertiary-fixed": "#9cf0ff",
+                        "success-mint": "#00E676",
+                        "error": "#ba1a1a",
+                        "on-background": "#191c1e",
+                        "on-primary-fixed": "#00201c",
+                        "primary-fixed": "#85f6e5",
+                        "error-container": "#ffdad6",
+                        "outline": "#6d7a77",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#e6e8ea",
+                        "on-primary-container": "#f4fffb",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "on-surface-variant": "#3d4947",
+                        "primary-container": "#008377",
+                        "surface-glass": "rgba(255, 255, 255, 0.7)",
+                        "surface-container": "#eceef0",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f2f4f6",
+                        "background": "#f7f9fb",
+                        "surface-dim": "#d8dadc",
+                        "inverse-primary": "#67d9c9",
+                        "surface-tint": "#006a60",
+                        "tertiary": "#006672",
+                        "secondary-fixed-dim": "#bdc2ff",
+                        "on-tertiary-container": "#f7feff",
+                        "tertiary-container": "#008190",
+                        "secondary-container": "#959efd",
+                        "primary-fixed-dim": "#67d9c9",
+                        "outline-variant": "#bcc9c6",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e0e3e5",
+                        "surface": "#f7f9fb",
+                        "secondary-fixed": "#e0e0ff",
+                        "surface-container-highest": "#e0e3e5",
+                        "inverse-surface": "#2d3133",
+                        "primary": "#00685e",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-secondary-fixed": "#000767",
+                        "on-secondary-container": "#27308a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "24": "24px"
+                    },
+                    "spacing": {
+                        "container-padding": "32px",
+                        "base": "8px",
+                        "gutter": "24px",
+                        "max-width": "1200px"
+                    },
+                    "fontFamily": {
+                        "title-md": ["Plus Jakarta Sans"],
+                        "label-caps": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-wave {
+            animation: wave 2.5s infinite;
+            transform-origin: 70% 70%;
+        }
+        @keyframes wave {
+            0% { transform: rotate( 0.0deg) }
+            10% { transform: rotate(14.0deg) }
+            20% { transform: rotate(-8.0deg) }
+            30% { transform: rotate(14.0deg) }
+            40% { transform: rotate(-4.0deg) }
+            50% { transform: rotate(10.0deg) }
+            60% { transform: rotate( 0.0deg) }
+            100% { transform: rotate( 0.0deg) }
+        }
+        .glowing-btn {
+            background: linear-gradient(135deg, #008377, #67d9c9);
+            box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3);
+            transition: all 0.2s ease;
+        }
+        .glowing-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(0, 230, 118, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased overflow-x-hidden min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 backdrop-blur-xl bg-surface-glass border-b border-white/20 shadow-sm transition-all duration-300 h-20 px-container-padding">
+<div class="max-w-max-width mx-auto flex justify-between items-center h-full">
+<div class="font-display text-headline-lg-mobile md:text-headline-lg text-primary tracking-tight">Project Anvaya</div>
+<nav class="hidden md:flex gap-8">
+<a class="text-primary font-bold border-b-2 border-primary font-title-md text-title-md hover:scale-105 transition-transform duration-200" href="#studio">Studio</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-title-md text-title-md hover:scale-105 transition-transform duration-200" href="#">Learn</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-title-md text-title-md hover:scale-105 transition-transform duration-200" href="#">Community</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-title-md text-title-md hover:scale-105 transition-transform duration-200" href="#">About</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="hidden md:block bg-primary text-on-primary px-6 py-2 rounded-full font-title-md text-title-md hover:scale-105 transition-transform duration-200 active:scale-95 duration-100">Sign In</button>
+<div class="flex gap-2">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-variant/50"><span class="material-symbols-outlined">settings</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-variant/50"><span class="material-symbols-outlined">help</span></button>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow pt-20">
+<!-- Hero Section -->
+<section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-20 px-container-padding">
+<!-- Background Animation -->
+<!-- STITCH_SHADER_START:ANIMATION_3 class="absolute inset-0 w-full h-full z-0 opacity-40" -->
+<div class="absolute inset-0 w-full h-full z-0 opacity-40" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_3" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_3');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+
+void main() {
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    
+    // Smooth, slow flowing colors matching Anvaya palette
+    vec3 cyan = vec3(0.0, 0.9, 1.0);
+    vec3 teal = vec3(0.0, 0.58, 0.53);
+    vec3 deepOcean = vec3(0.1, 0.14, 0.49);
+    
+    float t = u_time * 0.2;
+    
+    float n1 = sin(uv.x * 3.0 + t) * cos(uv.y * 2.0 + t * 0.5);
+    float n2 = sin(uv.y * 4.0 - t * 0.8) * cos(uv.x * 3.0 + t);
+    
+    vec3 color = mix(cyan, teal, 0.5 + 0.5 * n1);
+    color = mix(color, deepOcean, 0.3 + 0.3 * n2);
+    
+    // Add a soft glow
+    color += 0.05 * sin(uv.x * 10.0 + t);
+    
+    gl_FragColor = vec4(color * 0.9, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_3 -->
+<!-- Soft Blob Underlay -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-deep-ocean rounded-full blur-[100px] opacity-20 z-0"></div>
+<div class="relative z-10 max-w-max-width mx-auto grid grid-cols-1 lg:grid-cols-2 gap-gutter items-center">
+<div class="space-y-8 glass-panel p-8 md:p-12 rounded-24">
+<h1 class="font-display text-[40px] md:text-display text-on-surface leading-tight">Bridging Communication Through <span class="text-primary">AI Hand Gesture Translation.</span></h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Empowering real-time, seamless connection for those who rely on gesture-based communication. Experience the next generation of inclusive technology.</p>
+<div class="pt-4">
+<a class="glowing-btn text-white font-title-md text-title-md px-8 py-4 rounded-full inline-flex items-center gap-2" href="#studio">
+                            Launch Gesture Studio
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+</div>
+<div class="flex justify-center items-center h-full relative">
+<img alt="Friendly doodle characters demonstrating gestures" class="max-w-full h-auto animate-float z-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgw5MV4-1r1tJkXUUdnqTZW5jsAVaNmvRUbkv-Qd3QxvBUK4eZItcVHRmMtqcDGNrWtUf7El6aTyq-SY5Y9TrgAdy6HyqA5jt1JsKbm_5Jtn9dXr7OhI5rpOnDj3CoVdamtYXcl2dHw-eF8Q3iTAWdvujlL7Zq75R9X0JGvsMJ0tslpUGCZzunzL2zAjpjHNcNItQ8dzJTFRt_6gPnA9aT597ef4N0ivHfgJd3GwifF3vv-tCXoep7" style="filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));"/>
+</div>
+</div>
+<!-- Marquee/Scrolling Panel (Simulated with simple flex for single page context) -->
+<div class="absolute bottom-0 left-0 w-full bg-surface-container-lowest/80 backdrop-blur-md border-t border-white/20 py-4 overflow-hidden z-20">
+<div class="max-w-max-width mx-auto px-container-padding flex gap-8 items-center justify-between opacity-70">
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-success-mint">check_circle</span> <span class="font-label-caps text-label-caps">Real-time Translation</span></div>
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-success-mint">check_circle</span> <span class="font-label-caps text-label-caps">Accessible Design</span></div>
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-success-mint">check_circle</span> <span class="font-label-caps text-label-caps">Privacy First</span></div>
+<div class="flex items-center gap-2 hidden md:flex"><span class="material-symbols-outlined text-success-mint">check_circle</span> <span class="font-label-caps text-label-caps">Multi-platform Support</span></div>
+</div>
+</div>
+</section>
+<!-- Interactive Gesture Studio Section -->
+<section class="py-24 px-container-padding bg-surface-container-low relative" id="studio">
+<div class="absolute inset-0 bg-surface-variant/30 backdrop-blur-3xl z-0"></div>
+<div class="relative z-10 max-w-max-width mx-auto">
+<div class="mb-12 text-center space-y-4">
+<h2 class="font-display text-[32px] md:text-[40px] text-on-surface">Gesture Studio</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">Start signing in front of your camera. Our AI model will translate your gestures into text and speech in real-time.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column (Live Gesture Capture) -->
+<div class="lg:col-span-7 glass-panel rounded-24 p-6 relative flex flex-col shadow-[0_0_40px_rgba(0,131,119,0.15)] border-primary-container/30">
+<div class="flex justify-between items-center mb-4">
+<div class="flex items-center gap-2 bg-success-mint/10 text-on-primary-fixed-variant px-3 py-1.5 rounded-full border border-success-mint/30">
+<span class="w-2.5 h-2.5 rounded-full bg-success-mint animate-pulse"></span>
+<span class="font-label-caps text-label-caps">Live Feed Active</span>
+</div>
+<button class="p-2 bg-surface-container rounded-full hover:bg-surface-variant transition-colors text-on-surface">
+<span class="material-symbols-outlined">videocam_off</span>
+</button>
+</div>
+<!-- Video Viewport Placeholder -->
+<div class="relative w-full aspect-video bg-inverse-surface rounded-xl overflow-hidden border-2 border-inverse-primary/50 flex items-center justify-center">
+<!-- Overlaying Landmark concept -->
+<div class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none opacity-50">
+<img class="object-cover w-full h-full opacity-30 mix-blend-screen" data-alt="A stylized, glowing outline of hands demonstrating a sign language gesture, rendered in a minimalist line art style. The hands are illuminated in a soft cyan color against a dark, slightly blurred background, suggesting a high-tech motion capture system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUwYBvAzZlD9EBXUGI2BrILTOrNorMMatL3_1k-iJ4kkkHp0q5h5fbdagAI_yFf4EOptbapFdAkBS8wHW_V9lbftcotvtGtqI9wnJZz-NW-yP_vSLHHAsEzlpPfD6OL-aB8-mTS9W8N5wid-8DhvVj4c-1yjA-TKRuetPG8QIXxc1yc39-2RaPxfHmFZjPQ2-p10dRK84bhBth9nV0oErNetDvbxKSi8C-6CrIyPMF0wJ35p5YDoKV"/>
+</div>
+<!-- Processing State Mascot -->
+<div class="absolute z-20 flex flex-col items-center justify-center bg-inverse-surface/80 p-6 rounded-2xl backdrop-blur-sm">
+<img alt="Friendly robot mascot" class="w-24 h-24 mb-4 animate-wave" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0kcQY2FHXL5WdWXkL2vneHDu_jW1BUWP6iMGPA_wV3-OPAPqNIyllCbiCiWwhRMhgxfnu4UN9HBgVh4U2NCto6HAaJ_S2d8cR4aZPcP1aZZOjDhUP_m6ZrNZiUZuLUV-EMPD5T04nmevgiBmJ5PD1iwQaKct3g_mGMx3bEJjeGLqdvFP6WbjBKEVtndswKjGvk4WvU3F8ZEOCmG_ImN6k0YSQlI29AaHxZmQEZO01E-1zLCTxWE7n"/>
+<p class="text-on-secondary font-title-md text-title-md animate-pulse">Reading your signs...</p>
+</div>
+</div>
+</div>
+<!-- Right Column (Translation & Output) -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<!-- Dynamic Text Box -->
+<div class="glass-panel rounded-24 p-6 flex-grow flex flex-col">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-title-md text-title-md text-on-surface">Live Translation</h3>
+<div class="flex gap-2">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-[20px]">content_copy</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container/50 rounded transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-4 min-h-[120px] mb-6 flex-grow border border-surface-variant/50">
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed">
+<span class="opacity-100 transition-opacity duration-300">Hello.</span>
+<span class="opacity-100 transition-opacity duration-300">Thank you</span>
+<span class="opacity-50 transition-opacity duration-300 ml-1">...</span>
+</p>
+</div>
+<!-- Controls -->
+<div class="space-y-4">
+<button class="w-full glowing-btn text-white font-title-md text-title-md px-6 py-3 rounded-xl flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">record_voice_over</span>
+                                    Speak Sentence
+                                </button>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-2">Speed</label>
+<input class="w-full accent-primary" max="100" min="0" type="range" value="50"/>
+</div>
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-2">Pitch</label>
+<input class="w-full accent-primary" max="100" min="0" type="range" value="50"/>
+</div>
+</div>
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-2">Voice/Accent</label>
+<select class="w-full bg-surface-container-lowest border border-surface-variant rounded-lg px-3 py-2 text-on-surface font-body-md focus:ring-2 focus:ring-primary focus:border-primary">
+<option>Neutral - English (US)</option>
+<option>Warm - English (UK)</option>
+<option>Clear - Spanish (ES)</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Translation Log (Simplified) -->
+<div class="glass-panel rounded-xl p-4">
+<div class="flex items-center justify-between cursor-pointer group">
+<h4 class="font-title-md text-[16px] text-on-surface group-hover:text-primary transition-colors">Session Log</h4>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-transform duration-200 rotate-180">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-highest dark:bg-inverse-surface w-full py-12 flex flex-col md:flex-row justify-between items-center px-container-padding max-w-max-width mx-auto gap-gutter flat no shadows">
+<div class="font-title-md text-title-md text-primary">Project Anvaya</div>
+<div class="flex gap-4">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-md text-body-md transition-all duration-300" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-md text-body-md transition-all duration-300" href="#">Terms of Service</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-md text-body-md transition-all duration-300" href="#">Accessibility Statement</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-md text-body-md transition-all duration-300" href="#">Contact</a>
+</div>
+<div class="text-on-surface dark:text-inverse-on-surface font-body-md text-body-md">© 2024 Project Anvaya. Empowering through Gesture.</div>
+</footer>
+</body></html>
+
+#the uploaded file is the html code of the website 
+you can now use the code to update/replace or delete existing file 
+keep in mind that future scale , convenience in code updation is priority
+so update the file structure according to this point and connect then model and ui too 
+to consider the high token usage of the task 
+divide this in several stages on token usage , and then do it i.e. giving code for one file only or providing instruction or updating your own context memory

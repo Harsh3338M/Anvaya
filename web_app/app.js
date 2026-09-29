@@ -31,7 +31,9 @@ let frameCount = 0, lastFpsCheck = performance.now();
 // ---- DOM ----
 const $ = (id) => document.getElementById(id);
 const videoEl = $("input_video"), canvasEl = $("overlay_canvas"), ctx = canvasEl.getContext("2d");
-const badgeEl = $("live_badge"), overlayEl = $("camera_overlay"), cameraBtn = $("camera_toggle");
+const badgeEl = $("live_badge"), overlayEl = $("camera_overlay"), overlayTextEl = $("camera_overlay_text"), cameraBtn = $("camera_toggle");
+const cameraIconEl = cameraBtn.querySelector(".material-symbols-outlined");
+const badgeDotEl = badgeEl.querySelector("span:first-child"), badgeLabelEl = badgeEl.querySelector("span:last-child");
 const modelStatusEl = $("model_status"), fpsEl = $("fps_counter");
 const predictionEl = $("current_prediction"), confBarEl = $("confidence_bar");
 const textEl = $("translation_text"), autoSpeakEl = $("auto_speak_toggle");
@@ -122,15 +124,29 @@ function emitToken(label, confidence) {
 }
 
 // ---- UI state ----
+// Updates only the caption text -- the mascot <img> inside #camera_overlay is
+// left untouched (a previous version used .textContent here, which silently
+// deleted the mascot image; don't repeat that mistake).
 function setOverlay(text, visible) {
-  overlayEl.textContent = text;
+  overlayTextEl.textContent = text;
   overlayEl.classList.toggle("hidden", !visible);
 }
 
+// Toggles the badge's Tailwind classes directly rather than replacing its
+// contents, so the pulsing status dot (a nested <span>) survives the update.
 function setLive(on) {
   cameraOn = on;
-  badgeEl.className = on ? "badge badge-success" : "badge badge-off";
-  badgeEl.textContent = on ? "Live Feed Active" : "Camera Off";
+  if (on) {
+    badgeEl.className = "flex items-center gap-2 bg-success-mint/10 text-on-primary-fixed-variant px-3 py-1.5 rounded-full border border-success-mint/30";
+    badgeDotEl.className = "w-2.5 h-2.5 rounded-full bg-success-mint animate-pulse";
+    badgeLabelEl.textContent = "Live Feed Active";
+    cameraIconEl.textContent = "videocam_off"; // icon shows the action tapping it performs next
+  } else {
+    badgeEl.className = "flex items-center gap-2 bg-surface-container text-on-surface-variant px-3 py-1.5 rounded-full border border-outline-variant";
+    badgeDotEl.className = "w-2.5 h-2.5 rounded-full bg-outline";
+    badgeLabelEl.textContent = "Camera Off";
+    cameraIconEl.textContent = "videocam";
+  }
   if (!on) {
     ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
     frameBuffer = [];
