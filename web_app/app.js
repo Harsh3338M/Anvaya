@@ -119,8 +119,25 @@ function emitToken(label, confidence) {
   const word = label.replace(/_/g, " ");
   sentence += (sentence ? " " : "") + word;
   textEl.textContent = sentence;
-  window.AnvayaSessionLog.add(word, confidence);
-  if (autoSpeakEl.checked) window.AnvayaControls.speak(word);
+  // Defensive: these come from session-log.js / controls.js, both optional
+  // scripts. If either failed to load (e.g. a 404 on the server, a typo in a
+  // <script> tag), calling straight into them used to throw inside this
+  // function -- which runs inside MediaPipe's per-frame callback, so an
+  // uncaught error here silently froze the entire camera loop with no
+  // visible error. Guard + a visible warning is much easier to diagnose than
+  // "the app just stopped."
+  if (window.AnvayaSessionLog) {
+    window.AnvayaSessionLog.add(word, confidence);
+  } else {
+    console.warn("AnvayaSessionLog not loaded -- check that session-log.js is present and loaded before app.js.");
+  }
+  if (autoSpeakEl.checked) {
+    if (window.AnvayaControls) {
+      window.AnvayaControls.speak(word);
+    } else {
+      console.warn("AnvayaControls not loaded -- check that controls.js is present and loaded before app.js.");
+    }
+  }
 }
 
 // ---- UI state ----
@@ -165,8 +182,15 @@ const CONNECTIONS = [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10
   [0,13],[13,14],[14,15],[15,16],[0,17],[17,18],[18,19],[19,20],[5,9],[9,13],[13,17]];
 
 function drawHands(results) {
-  canvasEl.width = videoEl.videoWidth || 640;
-  canvasEl.height = videoEl.videoHeight || 480;
+  // Only resize the canvas buffer when the video's actual size changes (normally
+  // once, right after the camera starts). Reassigning .width/.height every frame
+  // -- even to the same value -- forces the browser to clear and reallocate the
+  // canvas's drawing buffer, which was a real, needless cost on every single frame.
+  const w = videoEl.videoWidth || 640, h = videoEl.videoHeight || 480;
+  if (canvasEl.width !== w || canvasEl.height !== h) {
+    canvasEl.width = w;
+    canvasEl.height = h;
+  }
   ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
   for (const lm of results.multiHandLandmarks || []) {
     ctx.strokeStyle = "#14b8a6"; ctx.lineWidth = 2;
@@ -187,10 +211,30 @@ function drawHands(results) {
 
 // ---- MediaPipe ----
 const hands = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
+// modelComplexity: 0 = MediaPipe's "lite" hand-landmark model. This is the main
+// FPS fix: complexity 1 ("full") tracking two hands on CPU/WASM is a known
+// bottleneck, commonly landing well under 20 FPS on mid-range hardware -- which
+// matches the slowdown happening even with no model/inference running at all.
+// Trade-off: complexity 0 is somewhat less precise on tricky hand poses. If you
+// have a strong laptop and want the accuracy back, set this to 1 and re-test FPS.
+const HAND_MODEL_COMPLEXITY = 0;
+hands.setOptions({ maxNumHands: 2, modelComplexity: HAND_MODEL_COMPLEXITY, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
 
 hands.onResults((results) => {
   if (!cameraOn) return;
+  try {
+    processResults(results);
+  } catch (err) {
+    // An error anywhere in here used to silently stop the whole camera loop
+    // (see the guards above for the specific bug that first caused this).
+    // Surfacing it both in the console and the on-page status text makes
+    // "the app froze" into "here's exactly what broke."
+    console.error("Error while processing a camera frame:", err);
+    modelStatusEl.textContent = `Error: ${err.message} (see browser console for details)`;
+  }
+});
+
+function processResults(results) {
   drawHands(results);
 
   const hasHands = !!(results.multiHandLandmarks && results.multiHandLandmarks.length);
@@ -224,7 +268,7 @@ hands.onResults((results) => {
     frameCount = 0;
     lastFpsCheck = now;
   }
-});
+}
 
 const camera = new Camera(videoEl, {
   onFrame: async () => { await hands.send({ image: videoEl }); },
