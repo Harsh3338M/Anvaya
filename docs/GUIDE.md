@@ -114,7 +114,7 @@ static file server, not for any inference logic):
 
 ```bash
 cd anvaya-project/web_app
-python -m http.server 3000
+python -m http.server 3000 or  python -m http.server 3002 --bind 127.0.0.1
 ```
 
 Then open `http://localhost:3000` in Chrome, Edge, or Firefox and click **Launch Gesture Studio**
