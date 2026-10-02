@@ -161,3 +161,28 @@ Yes — repeat Steps 1.2 through 1.5. Each retrain fully replaces the previous m
 Add the new class name to `CLASSES` in `capture_sequences.py`, record samples for it, and rerun
 Steps 1.3–1.5. You do need to retrain from scratch on the full class list (old + new) — the
 model's output layer size is fixed to the number of classes it was trained on.
+
+## Part 5: Final Cleanup (do this before your presentation)
+
+Once every class shows `(placeholder ignored)` in the `preprocess.py` report — meaning every
+class now has real recorded data — remove the placeholder dataset entirely for a completely
+clean final model:
+
+```bash
+rm -rf data_collection/dataset_kaggle_static      # Windows: rmdir /s /q data_collection\dataset_kaggle_static
+```
+
+Then retrain one final time:
+
+```bash
+cd model_training
+python preprocess.py && python train_cnn.py && python convert_tfjs.py
+cp -r model_web/* ../web_app/model/ && cp label_map.json ../web_app/model/
+```
+
+This isn't strictly required — the per-class logic in `preprocess.py` already prevents
+placeholder data from affecting a class once it has enough real samples — but deleting the
+folder removes any possibility of placeholder data influencing your final model, which is the
+safest state to present with.
+
+---
