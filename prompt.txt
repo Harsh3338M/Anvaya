@@ -1,0 +1,64 @@
+ROLE
+You are a senior UI/UX designer and front-end motion designer. Update my EXISTING UI framework into a landing page for "Anvaya". Do NOT invent a new theme. Reuse the colour palette, typography, spacing, button styles and overall look and feel already in the existing design, and extend them consistently.
+
+PROJECT IN ONE LINE
+Anvaya is a zero-GPU, real-time hand gesture and sign language translation system that runs in an ordinary browser. It converts hand signs into on-screen text and spoken audio.
+
+PURPOSE OF THIS PAGE
+This is an introduction page only. It introduces the project and the team, and ends with a button that leads to the live translator app. It is not the app itself.
+
+LAYOUT AND STRUCTURE (applies to all 4 frames)
+- One single full-viewport (100vh) scroll experience made of exactly 4 frames.
+- The BACKGROUND is identical in every frame: a simple, minimal, soft aesthetic background (flat colour or very subtle gradient/pattern) taken from the existing palette. It never changes or transitions between frames.
+- Only two things change from frame to frame: (1) the text content and (2) the mascot image.
+- CONTENT sits in the centre of the screen: a headline, a short paragraph or 2-4 concise points, kept readable with generous whitespace.
+- The MASCOT sits on the LEFT or RIGHT side of the content. Alternate sides each frame: Frame 1 right, Frame 2 left, Frame 3 right, Frame 4 left. Use image placeholders for the mascots (mascot_1.png ... mascot_4.png). I will upload the real images, so do not draw or generate any mascot. Give each placeholder a consistent size, around 35-40% of viewport height, with transparent background.
+- A slim vertical progress indicator (4 dots) on the right edge shows the current frame. A small "scroll down" hint appears on Frame 1 only.
+
+VERTICAL SCROLL ANIMATION (important)
+- Vertical scroll-driven storytelling: each scroll step moves to the next frame with scroll-snap (one frame per scroll gesture).
+- Between frames, the content fades out while sliding up slightly (about 24px), and the next frame's content fades in while sliding up from below. Duration 500-700ms, ease-in-out.
+- The mascot slides in from its own side (left or right) with a gentle fade, and the previous mascot slides out the same way. Add a very subtle idle float (2-4px up and down loop) to the visible mascot.
+- The background stays static the whole time, so the transition feels like only the content and mascot are swapping.
+- Support mouse wheel, touch swipe, and keyboard arrows. Clicking a progress dot jumps to that frame.
+- Respect prefers-reduced-motion by using simple fades only.
+- Mobile: stack the mascot above the content, centred, and keep the same scroll-snap behaviour.
+
+FRAME CONTENT
+
+FRAME 1: Introduction (mascot: waving / welcoming, placed RIGHT)
+- Small eyebrow tag: "Real-Time Sign Translation"
+- Headline: "Anvaya"
+- Subheadline: "Hand gestures in. Text and voice out. No GPU, no cloud, just your browser and a webcam."
+- Short line: "A B.Tech Semester V minor project, Department of Computer Science & Engineering."
+
+FRAME 2: The Problem (mascot: thinking / curious, placed LEFT)
+- Headline: "Why sign translation is still hard"
+- 3 short points, shown as simple cards or icon rows:
+  1. Heavy models: most systems need dedicated GPUs and cloud streaming, which adds delay and cost.
+  2. Flickering output: the in-between motion from one sign to the next causes erratic, wrong predictions (movement epenthesis).
+  3. Distance sensitivity: results change when you move closer to or further from the camera.
+
+FRAME 3: Our Solution / How It Works (mascot: working / building, placed RIGHT)
+- Headline: "How Anvaya works"
+- A compact horizontal or vertical 5-step flow in the centre (simple icons, short labels):
+  Webcam → 21 Hand Landmarks (MediaPipe) → Normalization (wrist-centred, scale-invariant) → Lightweight ONNX Model (CPU) → Debounce Filter (7-frame majority vote) → Text + Speech
+- Below the flow, 3 small highlight chips:
+  - "Scale & position invariant"
+  - "Stable output, no flicker"
+  - "Runs on CPU, speaks in-browser"
+- Target stats row (label them as "Targets", not achieved results): 30+ FPS, under 10 ms inference, 95%+ accuracy.
+
+FRAME 4: The Team and Call to Action (mascot: happy / celebrating, placed LEFT)
+- Headline: "Meet the team"
+- Row or grid of 4 team member cards with placeholder avatar circle, [Name], [Role]. Use clearly marked placeholders: [Member 1 Name] / [Role], [Member 2 Name] / [Role], and so on. Add a line under the cards: "Department of Computer Science & Engineering, B.Tech Semester V".
+- Primary button: "Try Anvaya Live" (links to the translator page), styled with the existing primary button style. Optional secondary text link: "View on GitHub".
+
+DESIGN RULES
+- Keep the same palette, fonts and corner radius as the existing UI. Do not introduce new colours.
+- Clean, friendly, minimal. No clutter, no stock photos, no extra decorative illustrations other than simple icons.
+- Strong text contrast and accessible font sizes (headline large, body at least 16px).
+- Add alt text to all mascot images (e.g. "Anvaya mascot waving").
+
+OUTPUT
+Generate the complete 4-frame landing page with the scroll animation behaviour described above, as desktop and mobile layouts, updating the existing framework rather than replacing it.

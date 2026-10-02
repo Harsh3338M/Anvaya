@@ -22,7 +22,7 @@ let model = null;
 let indexToLabel = [];
 let frameBuffer = [];
 let predictionHistory = [];
-let lastEmittedLabel = null, lastEmittedAt = 0, lastInferenceAt = 0;
+let lastEmittedLabel = null, lastEmittedAt = 0;
 let sentence = "";
 let cameraOn = true;
 let handsVisible = null;
@@ -75,6 +75,12 @@ function buildFrameVector(results) {
 // ---- Model ----
 async function loadModel() {
   try {
+    try {
+      await tf.setBackend("webgl"); // fastest backend; falls back silently if unavailable
+    } catch (backendErr) {
+      console.warn("WebGL backend unavailable, using TF.js default:", backendErr);
+    }
+    await tf.ready();
     model = await tf.loadLayersModel("model/model.json");
     const labelMap = await (await fetch("model/label_map.json")).json();
     for (const [name, idx] of Object.entries(labelMap)) indexToLabel[idx] = name;
@@ -85,15 +91,27 @@ async function loadModel() {
   }
 }
 
-function runInference() {
+// Runs one forward pass WITHOUT blocking the main thread. The previous version
+// used .dataSync(), which stalls the browser until the GPU finishes and hands
+// data back synchronously -- and because this used to be called directly from
+// inside MediaPipe's per-frame callback, that stall directly ate into the
+// camera's own frame budget, which was the cause of the FPS drop whenever a
+// hand was detected. .data() is the async equivalent: it awaits the result
+// instead of blocking, letting the browser keep processing camera frames
+// while the GPU works.
+async function runInferenceAsync() {
   if (!model || frameBuffer.length < SEQUENCE_LENGTH) return null;
-  return tf.tidy(() => {
-    const input = tf.tensor3d([frameBuffer], [1, SEQUENCE_LENGTH, FRAME_VECTOR_SIZE]);
-    const probs = model.predict(input).dataSync();
+  const input = tf.tensor3d([frameBuffer], [1, SEQUENCE_LENGTH, FRAME_VECTOR_SIZE]);
+  const output = model.predict(input);
+  try {
+    const probs = await output.data();
     let best = 0;
     for (let i = 1; i < probs.length; i++) if (probs[i] > probs[best]) best = i;
     return { label: indexToLabel[best], confidence: probs[best] };
-  });
+  } finally {
+    input.dispose();
+    output.dispose(); // tf.tidy() would normally handle this; done manually since we're async
+  }
 }
 
 // ---- Debounce / majority vote ----
@@ -247,21 +265,6 @@ function processResults(results) {
   if (frameBuffer.length > SEQUENCE_LENGTH) frameBuffer.shift();
 
   const now = performance.now();
-  if (now - lastInferenceAt >= INFERENCE_INTERVAL_MS) {
-    lastInferenceAt = now;
-    if (!hasHands) {
-      predictionHistory.push(null); // idle frames never count as votes
-      if (predictionHistory.length > PREDICTION_HISTORY_SIZE) predictionHistory.shift();
-    } else {
-      const pred = runInference();
-      if (pred) {
-        predictionEl.textContent = pred.label.replace(/_/g, " ");
-        confBarEl.style.width = `${Math.round(pred.confidence * 100)}%`;
-        pushPrediction(pred);
-      }
-    }
-  }
-
   frameCount++;
   if (now - lastFpsCheck >= 1000) {
     fpsEl.textContent = `${frameCount} FPS`;
@@ -269,6 +272,34 @@ function processResults(results) {
     lastFpsCheck = now;
   }
 }
+
+// Inference runs on its own independent timer, decoupled from the camera's
+// per-frame callback -- this is what actually fixes the FPS drop: camera
+// frames and model inference no longer compete for the same blocking call.
+let inferenceInFlight = false;
+
+async function inferenceTick() {
+  if (inferenceInFlight || !cameraOn) return;
+  inferenceInFlight = true;
+  try {
+    if (!handsVisible) {
+      predictionHistory.push(null); // idle frames never count as votes
+      if (predictionHistory.length > PREDICTION_HISTORY_SIZE) predictionHistory.shift();
+    } else {
+      const pred = await runInferenceAsync();
+      if (pred) {
+        predictionEl.textContent = pred.label.replace(/_/g, " ");
+        confBarEl.style.width = `${Math.round(pred.confidence * 100)}%`;
+        pushPrediction(pred);
+      }
+    }
+  } catch (err) {
+    console.error("Inference error:", err);
+  } finally {
+    inferenceInFlight = false;
+  }
+}
+setInterval(inferenceTick, INFERENCE_INTERVAL_MS);
 
 const camera = new Camera(videoEl, {
   onFrame: async () => { await hands.send({ image: videoEl }); },

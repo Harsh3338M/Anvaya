@@ -249,5 +249,5 @@ python preprocess.py && python train_cnn.py && python convert_tfjs.py
 cp -r model_web/* ../web_app/model/ && cp label_map.json ../web_app/model/
 
 # Run the demo:
-cd ../web_app && python -m http.server 3000
+cd ../web_app && python -m http.server 3000 or python -m http.server 3002 --bind 127.0.0.1
 ```
