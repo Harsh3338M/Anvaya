@@ -144,24 +144,6 @@ presentation)
   partial occlusion, or a class outside your trained list) — see the "Known Residual
   Limitations" table in `docs/ANVAYA_PIPELINE.md` if asked about it.
 
----
-
-## Common Questions
-
-**Q: Will the model keep learning from the audience/live demo?**
-No. Training happened once, offline, in Phase 1. During Phase 2 the model's weights are frozen
-— it only runs inference (a forward pass), never updates itself. This is standard practice for
-supervised deep learning systems, not a simplification specific to this project.
-
-**Q: Can I retrain later after collecting more data?**
-Yes — repeat Steps 1.2 through 1.5. Each retrain fully replaces the previous model files in
-`web_app/model/`; there's no incremental/continual learning happening.
-
-**Q: What if I want to add more classes later?**
-Add the new class name to `CLASSES` in `capture_sequences.py`, record samples for it, and rerun
-Steps 1.3–1.5. You do need to retrain from scratch on the full class list (old + new) — the
-model's output layer size is fixed to the number of classes it was trained on.
-
 ## Part 5: Final Cleanup (do this before your presentation)
 
 Once every class shows `(placeholder ignored)` in the `preprocess.py` report — meaning every
