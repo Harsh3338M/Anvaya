@@ -49,16 +49,19 @@ Training happens once, offline, in Python. During a demo the model never learns.
 anvaya-project/
 ├── data_collection/                 # DEV ONLY (Python)
 │   ├── capture_sequences.py         # records labelled (24,128) sequences from your webcam
+│   ├── import_kaggle_isl.py         # optional: imports a static-image dataset as placeholder data
+│   ├── import_include_videos.py     # optional: imports INCLUDE ISL word videos as real motion data
+│   ├── video_to_sequences.py        # video clip -> (24,128) training windows (used by the importer)
 │   └── normalizer.py                # normalization + frame-vector logic (mirrored in app.js)
 │
 ├── model_training/                  # DEV ONLY (Python)
-│   ├── preprocess.py                # builds train/val arrays + label_map.json
-│   ├── train_cnn.py                 # trains the 1D-CNN
+│   ├── preprocess.py                # builds train/val arrays (split by source clip) + label_map.json
+│   ├── train_cnn.py                 # trains the 1D-CNN, prints a per-class accuracy report
 │   ├── convert_tfjs.py              # exports the model for the browser
 │   └── requirements.txt             # Python dependencies (pinned, tested)
 │
 ├── web_app/                         # THE DEPLOYED PROJECT (static files, no backend)
-│   ├── index.html                   # landing page (nav, hero, feature strip, footer)
+│   ├── index.html                   # landing page (4-frame scroll-snap: intro, problem, how-it-works, team)
 │   ├── studio.html                  # Gesture Studio page (camera, translation, controls, footer)
 │   ├── app.js                       # camera + MediaPipe + inference + debounce
 │   ├── controls.js                  # speed / pitch / voice, copy, clear
@@ -69,6 +72,8 @@ anvaya-project/
 ├── docs/
 │   ├── BEGINNER_SETUP_GUIDE.md      # first-time walkthrough: install -> record -> train -> demo
 │   ├── GUIDE.md                     # short reference version of the same steps
+│   ├── KAGGLE_DATASET_GUIDE.md      # optional: bootstrap static/alphabet classes from a Kaggle dataset
+│   ├── GUIDE_V2.md                  # adding the INCLUDE word-video dataset (start with Pronouns)
 │   └── ANVAYA_PIPELINE.md           # technical spec and design decisions
 └── README.md
 ```
@@ -144,4 +149,7 @@ Both illustrations (the hero doodle and the "Reading your signs..." mascot) are 
 
 ## Contributors
 
-* **Minor Project Group (B.Tech Semester V)** — Department of Computer Science & Engineering
+* **Minor Project Group (B.Tech Semester V)** — Department of Computer Science & Engineering(Artificial Intelligence)
+  1. **Harsh Sinha**
+  2. **Vishruti sippy**
+  3. **Falak Ambade**
