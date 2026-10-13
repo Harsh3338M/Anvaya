@@ -160,6 +160,8 @@ Then retrain one final time:
 cd model_training
 python preprocess.py && python train_cnn.py && python convert_tfjs.py
 cp -r model_web/* ../web_app/model/ && cp label_map.json ../web_app/model/
+
+or  xcopy model_web\* ..\web_app\model\ /E /Y && copy label_map.json ..\web_app\model\
 ```
 
 This isn't strictly required — the per-class logic in `preprocess.py` already prevents

@@ -16,3 +16,5 @@ model_training/label_map.json
 web_app/model/*.json
 web_app/model/*.bin
 !web_app/model/.gitkeep
+
+GuideV2.md

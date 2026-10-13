@@ -64,7 +64,7 @@ unpacked to `data_collection/raw_videos/INCLUDE/`, about 2.4 GB for Pronouns) an
 python import_include_videos.py --source ~/Downloads/Pronouns_1of2.zip ~/Downloads/Pronouns_2of2.zip --categories Pronouns --dry-run
 ```
 (Windows: use your real paths, e.g. `C:\Users\you\Downloads\Pronouns_1of2.zip`.)
-
+# python import_include_videos.py --source "D:\Anvaya\Adjectives_1of8.zip" "D:\Anvaya\Adjectives_2of8.zip" "D:\Anvaya\Adjectives_3of8.zip" "D:\Anvaya\Adjectives_4of8.zip" "D:\Anvaya\Adjectives_5of8.zip" "D:\Anvaya\Adjectives_6of8.zip" "D:\Anvaya\Adjectives_7of8.zip" "D:\Anvaya\Adjectives_8of8.zip" --categories Adjectives --dry-run
 You'll see a table like:
 
 ```text
@@ -106,6 +106,8 @@ So make the importer's frame rate match your web app's:
    hands in view while signing.
 2. Read the **FPS counter** under the camera. Note a typical value, e.g. `18`.
 3. Pass it as `--target-fps 18` in Part 4. If you don't pass it, the default is `20`.
+
+#choose to run in 20 fps intentionally
 
 Your own recordings from `capture_sequences.py` run at whatever speed that Python loop manages
 (often faster than the browser). That mismatch already exists and isn't new; see Part 8.
@@ -155,6 +157,8 @@ python train_cnn.py
 python convert_tfjs.py
 cp -r model_web/* ../web_app/model/
 cp label_map.json ../web_app/model/
+
+or  xcopy model_web\* ..\web_app\model\ /E /Y && copy label_map.json ..\web_app\model\
 ```
 (Windows: `xcopy model_web\* ..\web_app\model\ /E /Y` and `copy label_map.json ..\web_app\model\`.)
 
