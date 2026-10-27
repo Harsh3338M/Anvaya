@@ -237,4 +237,87 @@ Speak Sentence
 <script src="session-log.js"></script>
 <script src="controls.js"></script>
 <script src="app.js"></script>
+
+<!-- 1. Add this UI element wherever you want the detected sign to appear in studio.html -->
+<div id="sign-prediction-panel" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; font-family: sans-serif; padding: 16px; background: rgba(17, 24, 39, 0.9); color: white; border-radius: 12px; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1);">
+  <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #9ca3af;">Detected ISL Sign</div>
+  <div style="font-size: 36px; font-weight: 800; color: #10b981; margin: 4px 0;" id="isl-label">—</div>
+  <div style="font-size: 12px; color: #9ca3af;">Confidence: <span id="isl-conf">0</span>%</div>
+</div>
+
+<!-- 2. Add the integration script below your existing MediaPipe / webcam scripts -->
+<script>
+  const API_URL = "http://127.0.0.1:8000/predict";
+  const videoElement = document.querySelector("video"); // Make sure this matches your studio.html video tag
+  
+  // Offscreen canvas matching the 224x224 input requirement for the ViT model
+  const cropCanvas = document.createElement("canvas");
+  cropCanvas.width = 224;
+  cropCanvas.height = 224;
+  const cropCtx = cropCanvas.getContext("2d");
+
+  let isPredicting = false;
+  let activeHandLandmarks = null; 
+
+  // NOTE: Inside your existing MediaPipe hands.onResults(results) loop in studio.html, 
+  // make sure to update activeHandLandmarks like this:
+  // activeHandLandmarks = results.multiHandLandmarks ? results.multiHandLandmarks.flat() : null;
+
+  async function sendFrameToModel() {
+    if (!videoElement || videoElement.readyState !== 4 || isPredicting) return;
+
+    isPredicting = true;
+
+    try {
+      const vw = videoElement.videoWidth;
+      const vh = videoElement.videoHeight;
+
+      if (activeHandLandmarks && activeHandLandmarks.length > 0) {
+        // Smart Crop: Automatically frame around the detected hand(s) using MediaPipe coordinates
+        const xs = activeHandLandmarks.map(lm => lm.x * vw);
+        const ys = activeHandLandmarks.map(lm => lm.y * vh);
+        const padding = 50; // Extra breathing room for hand gestures
+        const minX = Math.max(0, Math.min(...xs) - padding);
+        const minY = Math.max(0, Math.min(...ys) - padding);
+        const maxX = Math.min(vw, Math.max(...xs) + padding);
+        const maxY = Math.min(vh, Math.max(...ys) + padding);
+        const boxWidth = Math.max(1, maxX - minX);
+        const boxHeight = Math.max(1, maxY - minY);
+
+        cropCtx.drawImage(videoElement, minX, minY, boxWidth, boxHeight, 0, 0, 224, 224);
+      } else {
+        // Fallback Crop: Center square if no hand landmarks are actively passed yet
+        const side = Math.min(vw, vh);
+        const sx = (vw - side) / 2;
+        const sy = (vh - side) / 2;
+        cropCtx.drawImage(videoElement, sx, sy, side, side, 0, 0, 224, 224);
+      }
+
+      // Convert cropped canvas frame to base64 JPEG
+      const base64Image = cropCanvas.toDataURL("image/jpeg", 0.85);
+
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image_base64: base64Image })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Update studio UI if confidence passes threshold
+        if (data.confidence >= 50) {
+          document.getElementById("isl-label").innerText = data.label;
+          document.getElementById("isl-conf").innerText = data.confidence;
+        }
+      }
+    } catch (err) {
+      console.error("Studio model fetch error (Is server.py running?):", err);
+    } finally {
+      isPredicting = false;
+    }
+  }
+
+  // Poll the python backend ~3 times per second to keep UI snappy without lag
+  setInterval(sendFrameToModel, 350);
+</script>
 </body></html>
